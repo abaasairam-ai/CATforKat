@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Post-CAT Plan for Katt</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF6F0;
+    --card: #FFFFFF;
+    --primary: #B85D3B;
+    --primary-light: #F3E5DE;
+    --secondary: #2C3E35;
+    --text: #2A2623;
+    --muted: #6E655F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #1E1C1A;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: 12px;
+  }
+  .deck-container {
+    width: 100%;
+    max-width: 960px;
+    min-height: 540px;
+    height: calc(100dvh - 84px);
+    max-height: 640px;
+    position: relative;
+    background: var(--bg);
+    border-radius: 18px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 44px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(20px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+  .badge {
+    display: inline-block;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1.3px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  h1, h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--secondary);
+    line-height: 1.2;
+  }
+  h1 { font-size: clamp(26px, 5vw, 42px); margin-bottom: 12px; }
+  h2 { font-size: clamp(23px, 4.5vw, 34px); margin-bottom: 10px; }
+  p.lead {
+    font-size: clamp(14.5px, 2.5vw, 17px);
+    color: var(--muted);
+    line-height: 1.55;
+    max-width: 680px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 18px 0;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 18px 0;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid rgba(44, 62, 53, 0.09);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 4px 14px rgba(42, 38, 35, 0.04);
+  }
+  .card-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--secondary);
+    margin-bottom: 6px;
+  }
+  .card p {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .highlight-box {
+    background: var(--secondary);
+    color: #FAF6F0;
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin: 16px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .highlight-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(19px, 3.8vw, 23px);
+    color: #F4C98E;
+    margin-bottom: 6px;
+  }
+  .highlight-box p {
+    font-size: 14px;
+    color: rgba(250, 246, 240, 0.88);
+    line-height: 1.45;
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 960px;
+    margin-top: 12px;
+    padding: 0 4px;
+    color: #CFC9C2;
+    font-size: 13.5px;
+  }
+  .nav-btns { display: flex; gap: 10px; }
+  button.nav-btn {
+    background: rgba(255,255,255,0.12);
+    color: #FAF6F0;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  button.nav-btn:active, button.nav-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .cta-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .cta-btn {
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    flex: 1 1 200px;
+    text-align: center;
+    transition: transform 0.15s;
+  }
+  .cta-primary {
+    background: var(--primary);
+    color: #FFF;
+    box-shadow: 0 6px 16px rgba(184, 93, 59, 0.3);
+  }
+  .cta-secondary {
+    background: var(--card);
+    color: var(--secondary);
+    border: 1.5px solid var(--secondary);
+  }
+  .cta-btn:active { transform: scale(0.98); }
+  #response-msg {
+    margin-top: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    font-size: 14.5px;
+    line-height: 1.45;
+  }
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13.5px;
+  }
+
+  /* Mobile Phone Optimization */
+  @media (max-width: 720px) {
+    body { padding: 8px; }
+    .deck-container {
+      height: calc(100dvh - 76px);
+      max-height: none;
+      border-radius: 14px;
+    }
+    .slide {
+      padding: 24px 20px;
+      justify-content: flex-start;
+      gap: 12px;
+    }
+    .grid-2, .grid-3 {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 10px 0;
+    }
+    .card { padding: 15px; }
+    .highlight-box {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 16px 18px;
+    }
+    .highlight-emoji { display: none; }
+    .status-bar { margin-top: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-container" id="deck">
+  <!-- Slide 1: Cover -->
+  <section class="slide active">
+    <div>
+      <span class="badge">Executive Proposal • Strictly Post-Exam</span>
+      <h1>Hey Katt, Let’s Talk About What Happens After CAT.</h1>
+      <p class="lead">You conquered a BBA + B.Com dual degree, and now you’re in the final stretch of CAT prep. Before I ask for a minute of your post-exam calendar, here is a quick, zero-pressure pitch.</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-icon">🎓</div>
+        <h3>Dual Degree Proven</h3>
+        <p>Balancing BBA and B.Com already proved you can handle double the syllabus and still make it look effortless.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">⏳</div>
+        <h3>T-Minus 7 Days</h3>
+        <p>Right now, 100% of your bandwidth belongs to mock tests, DILR sets, and staying calm.</p>
+      </div>
+    </div>
+    <div style="font-size: 12.5px; color: var(--muted); margin-top: auto;">Swipe left/right or tap Next below →</div>
+  </section>
+
+  <!-- Slide 2: Good Wishes -->
+  <section class="slide">
+    <div>
+      <span class="badge">First Things First</span>
+      <h2>One Week to Go—You’ve Got This.</h2>
+      <p class="lead">No distractions this week. Just wanted to drop a note to say I’m rooting for you as you wrap up your final revisions.</p>
+    </div>
+    <div class="highlight-box">
+      <div>
+        <h3>All the Best for Your CAT Exam, Katt! ✨</h3>
+        <p>May your RC passages be readable, your DILR sets click on the first try, and your Quant accuracy stay sharp.</p>
+      </div>
+      <div class="highlight-emoji" style="font-size: 38px;">🎯</div>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <h3>Zero Prep Interruptions</h3>
+        <p>This deck is strictly scheduled for activation only after your exam center doors close.</p>
+      </div>
+      <div class="card">
+        <h3>Mandatory Decompression</h3>
+        <p>After months of formulas and mock scores, your brain deserves a proper break.</p>
+      </div>
+      <div class="card">
+        <h3>No Exam Talk Allowed</h3>
+        <p>Rule #1 of the post-CAT hangout: zero percentile predictions or paper post-mortems.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slide 3: Date Options -->
+  <section class="slide">
+    <div>
+      <span class="badge">The Post-CAT Agenda</span>
+      <h2>Pick Your Ideal Unwind Vibe</h2>
+      <p class="lead">Once the exam is officially behind you, I’d love to take you out to celebrate surviving CAT season. You pick the pace:</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">☕</div>
+        <h3>Option A: Cozy Coffee & Books</h3>
+        <p>A quiet, sunny corner cafe with great pour-overs, pastries, and zero timers ticking down.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🍝</div>
+        <h3>Option B: Proper Celebration Dinner</h3>
+        <p>Good food, relaxed ambience, and a proper toast to closing the CAT chapter for good.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🍨</div>
+        <h3>Option C: Evening Drive & Dessert</h3>
+        <p>Low-key, easygoing evening with great music, gelato, and whatever pace feels best after a long week.</p>
+      </div>
+    </div>
+    <div style="font-size: 12.5px; color: var(--muted); margin-top: auto;">*Custom venue requests and wildcard suggestions are warmly welcomed.</div>
+  </section>
+
+  <!-- Slide 4: Closing Ask -->
+  <section class="slide">
+    <div>
+      <span class="badge">The Official Ask</span>
+      <h2>So, Would You Like to Go Out After CAT?</h2>
+      <p class="lead">Focus completely on crushing your exam first. Whenever you’re free and rested next week, let’s celebrate—and once again, <strong>all the very best for CAT, Katt!</strong></p>
+      <div class="cta-group">
+        <button class="cta-btn cta-primary" onclick="respond('Yes! Let’s plan it right after CAT ☕✨')">Count me in (Post-CAT)!</button>
+        <button class="cta-btn cta-secondary" onclick="respond('Let’s pick a day once the exam is done! 📅')">Remind me after the exam</button>
+      </div>
+      <div id="response-msg"></div>
+    </div>
+    <div class="card status-bar">
+      <div><strong>Status:</strong> Awaiting Katt’s Availability</div>
+      <div style="color: var(--primary); font-weight: 700;">Good Luck on Exam Day! 🍀</div>
+    </div>
+  </section>
+</div>
+
+<div class="controls">
+  <span id="slide-counter">Slide 1 of 4</span>
+  <div class="nav-btns">
+    <button class="nav-btn" onclick="changeSlide(-1)">← Prev</button>
+    <button class="nav-btn" onclick="changeSlide(1)">Next →</button>
+  </div>
+</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('slide-counter');
+
+  function showSlide(index) {
+    slides[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    counter.textContent = `Slide ${current + 1} of ${slides.length}`;
+  }
+
+  function changeSlide(dir) {
+    showSlide(current + dir);
+  }
+
+  function respond(text) {
+    document.getElementById('response-msg').textContent = `Selected: "${text}" — Screenshot this and send it over whenever you're ready!`;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+    if (e.key === 'ArrowLeft') changeSlide(-1);
+  });
+
+  // Touch swipe support for mobile phones
+  let touchStartX = 0;
+  const deck = document.getElementById('deck');
+  deck.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+  deck.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 45) changeSlide(diff > 0 ? 1 : -1);
+  }, {passive: true});
+</script>
+</body>
+</html>
